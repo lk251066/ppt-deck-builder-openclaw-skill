@@ -1,0 +1,30 @@
+{
+  "title": "Sample PPT Deck",
+  "total_slides": 3,
+  "image_provider": "runninghub_g31",
+  "provider_options": {
+    "model": "rhart-image-n-g31-flash"
+  },
+  "resolution": "4k",
+  "aspect_ratio": "16:9",
+  "slides": [
+    {
+      "slide_number": 1,
+      "page_type": "cover",
+      "content": "Cover page",
+      "prompt_override": "Replace with your full page prompt and exact approved text lines."
+    },
+    {
+      "slide_number": 2,
+      "page_type": "content",
+      "content": "Content page",
+      "prompt_override": "Replace with your full page prompt and exact approved text lines."
+    },
+    {
+      "slide_number": 3,
+      "page_type": "summary",
+      "content": "Summary page",
+      "prompt_override": "Replace with your full page prompt and exact approved text lines."
+    }
+  ]
+}

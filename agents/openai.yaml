@@ -1,0 +1,4 @@
+interface:
+  display_name: "PPT Deck Builder"
+  short_description: "Portable single-folder PPT workflow with selectable image providers"
+  default_prompt: "Use $ppt-deck-builder to build a PPT from brief to packaged deck with a replaceable image provider using only this skill folder."
