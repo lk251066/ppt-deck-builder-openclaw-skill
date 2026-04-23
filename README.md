@@ -61,7 +61,7 @@ skills/
 方式一：复制到项目级 `skills/` 目录
 
 ```bash
-git clone https://github.com/lk251066/ppt-deck-builder-openclaw-skill.git ppt-deck-builder-skill
+git clone https://github.com/lk251066/ppt-deck-builder-skill.git ppt-deck-builder-skill
 mkdir -p <your-workspace>/skills
 cp -R ppt-deck-builder-skill/skills/ppt-deck-builder <your-workspace>/skills/
 ```
@@ -69,14 +69,13 @@ cp -R ppt-deck-builder-skill/skills/ppt-deck-builder <your-workspace>/skills/
 方式二：复制到本机共享 `Codex` skills 目录
 
 ```bash
-git clone https://github.com/lk251066/ppt-deck-builder-openclaw-skill.git ppt-deck-builder-skill
+git clone https://github.com/lk251066/ppt-deck-builder-skill.git ppt-deck-builder-skill
 mkdir -p ~/.codex/skills
 cp -R ppt-deck-builder-skill/skills/ppt-deck-builder ~/.codex/skills/
 ```
 
 说明：
 
-- 远端仓库地址当前仍然是 `ppt-deck-builder-openclaw-skill`
 - 本地克隆目录可以直接改成 `ppt-deck-builder-skill`
 - skill 内部说明已经去掉了 `OpenClaw-safe` 这类表述，统一改成更中性的可移植写法
 
@@ -206,7 +205,7 @@ The following slides come from `grsai_ai_science_deck/full_deck_micro_modules` a
 Option 1: copy into a workspace-level `skills/` directory
 
 ```bash
-git clone https://github.com/lk251066/ppt-deck-builder-openclaw-skill.git ppt-deck-builder-skill
+git clone https://github.com/lk251066/ppt-deck-builder-skill.git ppt-deck-builder-skill
 mkdir -p <your-workspace>/skills
 cp -R ppt-deck-builder-skill/skills/ppt-deck-builder <your-workspace>/skills/
 ```
@@ -214,14 +213,13 @@ cp -R ppt-deck-builder-skill/skills/ppt-deck-builder <your-workspace>/skills/
 Option 2: copy into a shared local Codex skills directory
 
 ```bash
-git clone https://github.com/lk251066/ppt-deck-builder-openclaw-skill.git ppt-deck-builder-skill
+git clone https://github.com/lk251066/ppt-deck-builder-skill.git ppt-deck-builder-skill
 mkdir -p ~/.codex/skills
 cp -R ppt-deck-builder-skill/skills/ppt-deck-builder ~/.codex/skills/
 ```
 
 Notes:
 
-- the current remote repository URL still contains `openclaw`
 - your local clone directory does not need to
 - the skill docs now use neutral portable-path wording instead of `OpenClaw-safe` labels
 
