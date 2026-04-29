@@ -16,7 +16,7 @@ if missing:
     raise SystemExit(1)
 PY
 
-PROVIDER="${PPT_IMAGE_PROVIDER:-grsai}"
+PROVIDER="${PPT_IMAGE_PROVIDER:-runninghub_g2}"
 echo "PPT_IMAGE_PROVIDER=$PROVIDER"
 
 if [[ -n "${PPT_IMAGE_PROVIDER_COMMAND:-}" ]]; then
@@ -26,7 +26,7 @@ else
 fi
 
 case "$PROVIDER" in
-  runninghub|runninghub_g31)
+  runninghub|runninghub_g2|runninghub_g31)
     if [[ -n "${RUNNINGHUB_API_KEY:-}" ]]; then
       echo "RUNNINGHUB_API_KEY is set"
     else

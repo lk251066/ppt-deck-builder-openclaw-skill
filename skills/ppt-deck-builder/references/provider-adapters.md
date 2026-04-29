@@ -8,13 +8,14 @@ Story design, page briefs, prompt rules, QA, and PPTX packaging should not depen
 ## Built-In Provider Names
 
 - `runninghub_g31`
+- `runninghub_g2`
 - `grsai`
 - `command`
 
 ## Recommended Strategy
 
-- Keep `grsai` as the ready-to-run default.
-- Keep `runninghub_g31` as the alternative built-in adapter when you need the RunningHub path.
+- Keep `runninghub_g2` as the ready-to-run default.
+- Keep `runninghub_g31` as the alternative built-in adapter when you need the older RunningHub G31 path.
 - Use `grsai` when the supplier should be switchable inside the built-in PPT workflow and only provider plus model need to change in the plan.
 - Use `command` when the host agent or another toolchain should own the image backend.
 - Put backend-specific changes in one adapter command instead of editing the story and layout workflow.
@@ -90,7 +91,49 @@ Recommended failure shape:
 }
 ```
 
-## RunningHub Notes
+## RunningHub G-2.0 Notes
+
+For `runninghub_g2`, supported provider options include:
+
+- `model`
+- `base_url`
+- `submit_path`
+- `query_path`
+- `api_key_env`
+- `mode`
+- `task_type`
+- `request_overrides`
+
+Default behavior:
+
+- model: `rhart-image-g-2`
+- text-to-image path: `/{model}/text-to-image`
+- image-to-image path: `/{model}/image-to-image`
+- query path: `/query`
+- auth env: `RUNNINGHUB_API_KEY`
+
+Behavior mapping:
+
+- PPT `prompt` is forwarded as `prompt`
+- PPT `aspect_ratio` is forwarded as `aspectRatio`
+- PPT `resolution` is forwarded as `resolution`
+- when `reference_images` or `style_anchor_image` exists, the adapter switches to image-to-image and forwards those images as `imageUrls`
+- local reference-image paths are converted to data URIs before submission
+
+RunningHub G-2.0 text-to-image supports long prompts and 1k / 2k / 4k resolution options. 4k is available only for 16:9, 9:16, 21:9, and 9:21.
+
+Recommended plan pattern:
+
+```json
+{
+  "image_provider": "runninghub_g2",
+  "provider_options": {
+    "model": "rhart-image-g-2"
+  }
+}
+```
+
+## RunningHub G31 Notes
 
 For `runninghub_g31`, supported provider options include:
 
@@ -107,9 +150,7 @@ Default behavior:
 - submit path: `/{model}/text-to-image`
 - query path: `/query`
 
-This built-in adapter is text-to-image only by default.
-If the workflow needs reference images or image-edit style continuation, switch to `command` and own that logic in the adapter command.
-This matters when one approved sample page should steer later pages, for example in a whiteboard hand-drawn deck or any style that depends on one stable mascot and line style.
+This older path is kept for compatibility. Prefer `runninghub_g2` for new decks.
 
 The current generator treats common timeout and busy responses as retryable.
 If the provider still fails:

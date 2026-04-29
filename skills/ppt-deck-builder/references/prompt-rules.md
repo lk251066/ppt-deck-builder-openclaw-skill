@@ -8,7 +8,7 @@
 - Put exact allowed text lines at the end.
 - Tell the model each line appears once only.
 - Prefer fewer, larger text groups by default.
-- If the provider is `grsai` and the model is `gpt-image-2`, you may relax this default after a stable reference pack and intentionally test denser text layouts.
+- If the provider is `runninghub_g2`, or `grsai` with `gpt-image-2`, you may relax this default after a stable reference pack and intentionally test denser text layouts.
 - Give the page a composition job, not just a style direction.
 
 ## Page Identity First
@@ -54,8 +54,8 @@ Use this order unless a provider needs a stricter format:
 - High-information pages can carry more text, but only when each sentence has a fixed region and large enough text area.
 - Do not increase information density by repeating the same idea in multiple cards, strips, or footers.
 - Prefer `title + 4-6 modules + 1 summary strip` before trying long paragraph layouts.
-- For `grsai` with `gpt-image-2`, a validated dense-mode page may extend this to `title + 6-10 modules + 1 summary strip`.
-- For `grsai` with `gpt-image-2`, another stable dense pattern is `title + 3-5 explanation panels` where each panel carries a longer sentence.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, a validated dense-mode page may extend this to `title + 6-10 modules + 1 summary strip`.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, another stable dense pattern is `title + 3-5 explanation panels` where each panel carries a longer sentence.
 
 ## Reading Path And Region Binding
 
@@ -75,7 +75,7 @@ Use this order unless a provider needs a stricter format:
 - Give each long sentence one dedicated region.
 - Use one summary strip at most.
 - If a page needs more explanation, expand one lower explanation area instead of duplicating copy inside the main diagram.
-- For `grsai` with `gpt-image-2`, dense-page stress tests may use either more small modules or longer explanation sentences, but each sentence still needs one clear home region.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, dense-page stress tests may use either more small modules or longer explanation sentences, but each sentence still needs one clear home region.
 - Even in dense mode, avoid tiny floating labels, crowded sidebars, and decorative micro-copy that do not belong to a named module.
 
 ## Chinese Text Guardrails
@@ -142,7 +142,7 @@ Use this order unless a provider needs a stricter format:
 - If one block should dominate, say so explicitly.
 - For high-information pages, describe which sentences belong in which regions.
 - If the page already has a strong structure, add explanation text around that structure instead of replacing it.
-- For `grsai` with `gpt-image-2`, denser structures can be tested deliberately after sample validation, but only by expanding named modules or named explanation panels.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, denser structures can be tested deliberately after sample validation, but only by expanding named modules or named explanation panels.
 
 ## Sample-First Rules
 

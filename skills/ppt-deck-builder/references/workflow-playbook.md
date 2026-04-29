@@ -60,8 +60,8 @@ Recommended presets:
 - A path page should stay a path page, a matrix page should stay a matrix page, and a comparison page should stay a comparison page.
 - Keep the deck's main visual standard first.
 - Use light background and dark text only as a fallback when dense text remains unreadable after layout and wording repair.
-- If the provider is `grsai` and the model is `gpt-image-2`, you may deliberately test denser pages after one stable reference pack proves the structure is holding.
-- For `grsai` with `gpt-image-2`, two useful stress-test directions are:
+- If the provider is `runninghub_g2`, or `grsai` with `gpt-image-2`, you may deliberately test denser pages after one stable reference pack proves the structure is holding.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, two useful stress-test directions are:
   `title + 6-10 small modules + 1 conclusion strip`
   `title + 3-5 larger explanation panels with longer sentences`
 - If the slide should feel premium, improve hierarchy, spacing, region ownership, and restraint before adding more glow or motion cues.
@@ -143,7 +143,7 @@ If text quality is poor:
 - keep one sentence in one region only
 - restore the original page structure if the prompt drifted into a generic template
 - if the chosen preset is `whiteboard_handdrawn`, reduce module count before reducing handwriting size
-- if the provider is `grsai` with `gpt-image-2`, try one more dense-structure repair before simplifying, because the model may still carry more text than the default rules assume
+- if the provider is `runninghub_g2`, or `grsai` with `gpt-image-2`, try one more dense-structure repair before simplifying, because the model may still carry more text than the default rules assume
 - if the model rewrites titles in whiteboard mode, explicitly lock the page title and forbid replacement text before rerunning
 
 If style quality is poor:

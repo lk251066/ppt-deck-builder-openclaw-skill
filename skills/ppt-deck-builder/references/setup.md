@@ -21,31 +21,39 @@ Provider resolution order:
 2. CLI `--provider`
 3. plan `image_provider`
 4. env `PPT_IMAGE_PROVIDER`
-5. default `grsai`
+5. default `runninghub_g2`
 
 Built-in providers:
 
+- `runninghub_g2`
 - `runninghub_g31`
 - `grsai`
 - `command`
 
 ## Environment
 
-Before first real run, confirm whether a GrsAI API key is available for the default path.
-Default image model for this skill is `gpt-image-2`.
+Before first real run, confirm whether a RunningHub API key is available for the default path.
+Default image model for this skill is `rhart-image-g-2`.
+
+For RunningHub G-2.0:
+
+```bash
+export PPT_IMAGE_PROVIDER="runninghub_g2"
+export RUNNINGHUB_API_KEY="your_api_key"
+```
+
+For the older RunningHub G31 path:
+
+```bash
+export PPT_IMAGE_PROVIDER="runninghub_g31"
+export RUNNINGHUB_API_KEY="your_api_key"
+```
 
 For GrsAI:
 
 ```bash
 export PPT_IMAGE_PROVIDER="grsai"
 export GRSAI_API_KEY="your_api_key"
-```
-
-For RunningHub:
-
-```bash
-export PPT_IMAGE_PROVIDER="runninghub_g31"
-export RUNNINGHUB_API_KEY="your_api_key"
 ```
 
 For a local command adapter from the skill root:

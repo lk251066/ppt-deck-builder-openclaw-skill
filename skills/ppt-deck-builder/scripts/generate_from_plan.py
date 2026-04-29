@@ -3,6 +3,7 @@
 Generate slide images from a plan JSON using a selectable image provider.
 
 Built-in providers:
+- runninghub_g2: RunningHub G-2.0 Standard Model API
 - runninghub_g31: RunningHub Standard Model API
 - grsai: GrsAI draw API
 - command: call a local command adapter that returns JSON on stdout
@@ -31,9 +32,10 @@ import requests
 
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_PROVIDER = "grsai"
+DEFAULT_PROVIDER = "runninghub_g2"
 DEFAULT_RUNNINGHUB_BASE = "https://www.runninghub.cn/openapi/v2"
-DEFAULT_RUNNINGHUB_MODEL = "rhart-image-n-g31-flash"
+DEFAULT_RUNNINGHUB_MODEL = "rhart-image-g-2"
+DEFAULT_RUNNINGHUB_G31_MODEL = "rhart-image-n-g31-flash"
 DEFAULT_QUERY_PATH = "/query"
 DEFAULT_GRSAI_BASE = "https://grsai.dakka.com.cn"
 DEFAULT_GRSAI_MODEL = "gpt-image-2"
@@ -94,7 +96,10 @@ def normalize_provider(name: str | None) -> str:
         return DEFAULT_PROVIDER
     normalized = str(name).strip()
     aliases = {
-        "runninghub": "runninghub_g31",
+        "runninghub": "runninghub_g2",
+        "runninghub_g2": "runninghub_g2",
+        "runninghub_g2_text": "runninghub_g2",
+        "runninghub_g2_image": "runninghub_g2",
         "runninghub_g31": "runninghub_g31",
         "grsai": "grsai",
         "grsai_draw": "grsai",
@@ -324,8 +329,16 @@ def write_image_from_result(result: dict[str, Any], out: Path) -> dict[str, Any]
     return None
 
 
+def default_runninghub_model(provider: str) -> str:
+    if provider == "runninghub_g31":
+        return DEFAULT_RUNNINGHUB_G31_MODEL
+    return DEFAULT_RUNNINGHUB_MODEL
+
+
 def run_runninghub_attempt(
     *,
+    slide: dict[str, Any],
+    provider: str,
     prompt: str,
     resolution: str,
     aspect_ratio: str,
@@ -333,15 +346,19 @@ def run_runninghub_attempt(
     max_poll_seconds: int,
 ) -> dict[str, Any]:
     base_url = str(provider_options.get("base_url") or os.getenv("RUNNINGHUB_BASE_URL") or DEFAULT_RUNNINGHUB_BASE).rstrip("/")
-    model = str(provider_options.get("model") or os.getenv("RUNNINGHUB_MODEL") or DEFAULT_RUNNINGHUB_MODEL)
-    submit_path = str(provider_options.get("submit_path") or f"/{model}/text-to-image")
+    model = str(provider_options.get("model") or os.getenv("RUNNINGHUB_MODEL") or default_runninghub_model(provider))
+    reference_images = collect_reference_images(slide, provider_options)
+    request_mode = str(provider_options.get("mode") or provider_options.get("task_type") or "").strip().lower()
+    use_image_to_image = bool(reference_images) or request_mode in {"image-to-image", "image_to_image", "i2i"}
+    default_submit_path = f"/{model}/image-to-image" if use_image_to_image else f"/{model}/text-to-image"
+    submit_path = str(provider_options.get("submit_path") or default_submit_path)
     query_path = str(provider_options.get("query_path") or DEFAULT_QUERY_PATH)
     api_key_env = str(provider_options.get("api_key_env") or "RUNNINGHUB_API_KEY")
     api_key = os.getenv(api_key_env)
     if not api_key:
         return {
             "status": "FAILED",
-            "provider": "runninghub_g31",
+            "provider": provider,
             "model": model,
             "reason": f"{api_key_env} is not set",
         }
@@ -352,6 +369,8 @@ def run_runninghub_attempt(
         "resolution": resolution,
         "aspectRatio": aspect_ratio,
     }
+    if reference_images:
+        payload["imageUrls"] = reference_images
     payload.update(request_overrides)
 
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
@@ -366,7 +385,7 @@ def run_runninghub_attempt(
     if not task_id:
         return {
             "status": "FAILED",
-            "provider": "runninghub_g31",
+            "provider": provider,
             "model": model,
             "submit_response": submit_json,
             "reason": "no_taskId",
@@ -386,7 +405,7 @@ def run_runninghub_attempt(
 
     attempt_record: dict[str, Any] = {
         "status": "FAILED",
-        "provider": "runninghub_g31",
+        "provider": provider,
         "model": model,
         "taskId": task_id,
         "submit_response": submit_json,
@@ -668,8 +687,10 @@ def run_provider_attempt(
     provider_options: dict[str, Any],
     max_poll_seconds: int,
 ) -> dict[str, Any]:
-    if provider == "runninghub_g31":
+    if provider in {"runninghub_g2", "runninghub_g31"}:
         return run_runninghub_attempt(
+            slide=slide,
+            provider=provider,
             prompt=prompt,
             resolution=resolution,
             aspect_ratio=aspect_ratio,
@@ -753,7 +774,7 @@ def generate_one_slide(
         attempts.append(slim_attempt_record(result))
 
         if result.get("status") != "SUCCESS":
-            if provider == "runninghub_g31" and is_retryable_runninghub_failure(result.get("final_response")):
+            if provider in {"runninghub_g2", "runninghub_g31"} and is_retryable_runninghub_failure(result.get("final_response")):
                 continue
             if provider == "grsai" and (result.get("retryable") or is_retryable_grsai_failure(result.get("final_response"))):
                 continue
@@ -788,7 +809,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--plan", required=True, help="Path to slides_plan_*.json")
     ap.add_argument("--outdir", required=True, help="Output directory for images")
-    ap.add_argument("--provider", help="Image provider override, e.g. grsai, runninghub_g31, or command")
+    ap.add_argument("--provider", help="Image provider override, e.g. runninghub_g2, grsai, runninghub_g31, or command")
     ap.add_argument("--provider-command", help="Local adapter command for provider=command")
     ap.add_argument("--provider-option", action="append", default=[], metavar="KEY=VALUE", help="Extra provider option override")
     ap.add_argument("--model", help="Model override for providers that use a model name")

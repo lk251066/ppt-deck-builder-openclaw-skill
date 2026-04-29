@@ -1,7 +1,7 @@
 ---
 name: ppt-deck-builder
 description: Use when building or revising a PPT/演示文稿 in a portable, self-contained workflow folder, especially when the job spans storyline design, page briefs, page-level text compression, fixed-text image prompts, style-selectable slide image generation, sample-pack generation, page repair, and PPTX packaging without depending on repo files outside this skill folder.
-version: 0.4.0
+version: 0.5.0
 metadata:
   openclaw:
     requires:
@@ -42,9 +42,10 @@ This workflow expects:
 - provider-specific environment variables only for the chosen provider
 
 Before first generation:
-- Ask whether a GrsAI API key is available for the default path.
-- Default model is `gpt-image-2`.
-- If no provider is specified, stay on `grsai`.
+- Ask whether a RunningHub API key is available for the default path.
+- Default provider is `runninghub_g2`.
+- Default model is `rhart-image-g-2`.
+- If no provider is specified, stay on `runninghub_g2`.
 - If the user is simplifying an existing deck and the new page count, density, or tone are not obvious, confirm the outline before generation.
 
 Portable skill paths use `{baseDir}`.
@@ -108,8 +109,8 @@ Read when needed:
 - Do not raise information density by repeating the same idea in both the diagram area and the footer area.
 - Treat the page as an integrated text-and-background PPT page, not as a background image that will be fixed later.
 - For Chinese image pages, prefer fewer but larger text groups over many scattered micro-labels.
-- For `grsai` with `gpt-image-2`, once a reference pack proves the layout is stable, you may intentionally relax the default density limit and test either more modules or longer explanation sentences.
-- For `grsai` with `gpt-image-2`, dense-page test patterns can include `title + 6-10 small modules + 1 conclusion strip` or `title + 3-5 longer explanation panels`.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, once a reference pack proves the layout is stable, you may intentionally relax the default density limit and test either more modules or longer explanation sentences.
+- Dense-page test patterns can include `title + 6-10 small modules + 1 conclusion strip` or `title + 3-5 longer explanation panels`.
 - For whiteboard-style pages, reduce visible text earlier by default and prefer 3-6 large handwritten groups instead of many tiny labels, unless the chosen provider and model have already proven they can carry denser handwritten text.
 
 Use these local resources:
@@ -131,7 +132,7 @@ Use these local resources:
 - Keep the deck's primary business visual standard first.
 - Use a light consulting-style layout with dark text only as a fallback when dense text remains blurry or repetitive after prompt repair.
 - When a model supports richer text rendering, still avoid long paragraph blocks until a reference pack proves the layout is stable.
-- For `grsai` with `gpt-image-2`, a stable reference pack can unlock denser prompt plans with more visible modules or longer explanation lines than the default guardrails allow.
+- For `runninghub_g2` or `grsai` with `gpt-image-2`, a stable reference pack can unlock denser prompt plans with more visible modules or longer explanation lines than the default guardrails allow.
 - If the chosen style is `whiteboard_handdrawn`, explicitly lock the whiteboard borders, zero room background, handwritten Chinese, hand-drawn illustration behavior, and mascot policy if any.
 - If the user wants hand-drawn explanation without a physical board frame, switch to a `custom` borderless hand-drawn style brief instead of forcing `whiteboard_handdrawn`.
 - If the chosen style uses comic people or a mascot, define whether they are supporting, medium, or dominant. Default to supporting only for client-facing decks.
@@ -181,17 +182,20 @@ The image provider can be selected in this order:
 2. CLI `--provider`
 3. Plan-level `image_provider`
 4. Environment variable `PPT_IMAGE_PROVIDER`
-5. Default `grsai`
+5. Default `runninghub_g2`
 
 Notes:
-- The built-in `runninghub_g31` adapter targets the RunningHub `rhart-image-n-g31-flash/text-to-image` path by default.
+- The built-in `runninghub_g2` adapter targets RunningHub `rhart-image-g-2/text-to-image` by default.
+- When `reference_images` or `style_anchor_image` is present, `runninghub_g2` automatically uses `rhart-image-g-2/image-to-image` and sends the images as `imageUrls`.
+- The built-in `runninghub_g31` adapter remains available for the older RunningHub `rhart-image-n-g31-flash/text-to-image` path.
 - The built-in `grsai` adapter targets the GrsAI draw API and uses `gpt-image-2` by default while keeping callback and polling details inside the provider layer.
 - If the backend should use reference images, image editing, or multi-image style anchoring, switch to `command` and let the host agent own that adapter logic.
 - If the user wants strong cross-page style continuation such as a whiteboard course deck, prefer a sample-first workflow and treat one approved page as the style anchor for later reruns.
 
 Built-in providers:
-- `grsai`
+- `runninghub_g2`
 - `runninghub_g31`
+- `grsai`
 - `command`
 
 `command` is the generic escape hatch.
@@ -285,7 +289,7 @@ Read when needed:
 - One page should do one job.
 - Prefer fewer, larger text groups in image-based pages.
 - Prefer fewer, larger text groups in image-based pages by default.
-- If the provider is `grsai` and the model is `gpt-image-2`, you may deliberately push text density after sample validation, but keep each sentence bound to one region and avoid floating micro-label clutter.
+- If the provider is `runninghub_g2`, or `grsai` with `gpt-image-2`, you may deliberately push text density after sample validation, but keep each sentence bound to one region and avoid floating micro-label clutter.
 - Shorten titles before prompting; do not hope the model will solve crowded copy.
 - Give each page a composition job, not just a style direction.
 - Define page identity and reading path before adding visual styling.

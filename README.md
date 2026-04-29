@@ -18,14 +18,17 @@
 
 ### 默认图片通道
 
-- 默认 provider：`grsai`
-- 默认模型：`gpt-image-2`
-- 备选 provider：`runninghub_g31`
+- 默认 provider：`runninghub_g2`
+- 默认模型：`rhart-image-g-2`
+- 默认文生图接口：`/rhart-image-g-2/text-to-image`
+- 带参考图时自动使用图生图接口：`/rhart-image-g-2/image-to-image`
+- 备选 provider：`grsai`
+- 旧版 RunningHub provider：`runninghub_g31`
 - 通用扩展 provider：`command`
 
-如果没有显式指定 provider，流程默认走 `grsai + gpt-image-2`。
+如果没有显式指定 provider，流程默认走 `runninghub_g2 + rhart-image-g-2`。
 
-在 `grsai + gpt-image-2` 下，这套 workflow 已经允许在参考样张稳定后适度放开原有的信息密度限制，例如：
+在 `runninghub_g2` 下，这套 workflow 会优先使用 RunningHub G-2.0 新模型。参考样张稳定后，可以适度放开原有的信息密度限制，例如：
 
 - `title + 6-10 small modules + 1 conclusion strip`
 - `title + 3-5 explanation panels with longer sentences`
@@ -34,7 +37,7 @@
 
 ### 示例页面
 
-下面这几页来自 `grsai_ai_science_deck/full_deck_micro_modules`，用于展示 `grsai + gpt-image-2` 在白底手绘讲解风格下，对“小模块高强度信息页”的实际承载效果。
+下面这几页来自 `grsai_ai_science_deck/full_deck_micro_modules`，用于展示高文字密度页面在白底手绘讲解风格下的实际承载效果。
 
 | slide-01 | slide-04 |
 | --- | --- |
@@ -96,14 +99,21 @@ python3 -m pip install requests python-pptx
 
 ### 环境变量
 
-默认路径使用 GrsAI：
+默认路径使用 RunningHub G-2.0：
+
+```bash
+export PPT_IMAGE_PROVIDER="runninghub_g2"
+export RUNNINGHUB_API_KEY="your_api_key"
+```
+
+如果需要切到 GrsAI：
 
 ```bash
 export PPT_IMAGE_PROVIDER="grsai"
 export GRSAI_API_KEY="your_api_key"
 ```
 
-如果需要切到 RunningHub：
+如果需要切到旧版 RunningHub G31：
 
 ```bash
 export PPT_IMAGE_PROVIDER="runninghub_g31"
@@ -151,7 +161,7 @@ bash scripts/check_env.sh
 - 不要把“计划写完”当成“PPT 已生成完成”
 - 不要跳过 sample pack / reference pack
 - 不要在没看完整套联系表之前就直接打包
-- 如果是 `gpt-image-2` 密集页，先验证结构稳定，再放开文字量
+- 如果是 `runninghub_g2` 或其他强文本模型的密集页，先验证结构稳定，再放开文字量
 - 如果用户要手绘讲解感但不要白板边框，优先用 `custom` 的无边框手绘风格，而不是硬套 `whiteboard_handdrawn`
 
 ## English
@@ -174,14 +184,17 @@ It is optimized for finished-image delivery decks rather than heavily editable t
 
 ### Default Image Path
 
-- default provider: `grsai`
-- default model: `gpt-image-2`
-- alternate built-in provider: `runninghub_g31`
+- default provider: `runninghub_g2`
+- default model: `rhart-image-g-2`
+- default text-to-image endpoint: `/rhart-image-g-2/text-to-image`
+- automatic image-to-image endpoint with reference images: `/rhart-image-g-2/image-to-image`
+- alternate built-in provider: `grsai`
+- legacy RunningHub provider: `runninghub_g31`
 - escape-hatch provider: `command`
 
-If no provider is specified, the workflow defaults to `grsai + gpt-image-2`.
+If no provider is specified, the workflow defaults to `runninghub_g2 + rhart-image-g-2`.
 
-With `grsai + gpt-image-2`, the workflow now allows denser slide experiments after a stable reference pack, including:
+With `runninghub_g2`, the workflow now uses RunningHub G-2.0 by default. After a stable reference pack, it allows denser slide experiments including:
 
 - `title + 6-10 small modules + 1 conclusion strip`
 - `title + 3-5 explanation panels with longer sentences`
@@ -190,7 +203,7 @@ The rule still holds that every sentence must belong to one named region instead
 
 ### Sample Slides
 
-The following slides come from `grsai_ai_science_deck/full_deck_micro_modules` and show how `grsai + gpt-image-2` behaves on white-background hand-drawn explanation slides with intentionally higher module density.
+The following slides come from `grsai_ai_science_deck/full_deck_micro_modules` and show how white-background hand-drawn explanation slides behave with intentionally higher module density.
 
 | slide-01 | slide-04 |
 | --- | --- |
@@ -238,14 +251,21 @@ python3 -m pip install requests python-pptx
 
 ### Environment
 
-Default GrsAI path:
+Default RunningHub G-2.0 path:
+
+```bash
+export PPT_IMAGE_PROVIDER="runninghub_g2"
+export RUNNINGHUB_API_KEY="your_api_key"
+```
+
+GrsAI fallback:
 
 ```bash
 export PPT_IMAGE_PROVIDER="grsai"
 export GRSAI_API_KEY="your_api_key"
 ```
 
-RunningHub fallback:
+Legacy RunningHub G31 fallback:
 
 ```bash
 export PPT_IMAGE_PROVIDER="runninghub_g31"
@@ -286,5 +306,5 @@ export PPT_IMAGE_PROVIDER_COMMAND="python3 scripts/provider_command_template.py"
 - do not treat plan writing as deck completion
 - do not skip the sample / reference-pack step
 - do not package before reviewing the whole image set
-- if you use dense `gpt-image-2` pages, prove structure stability before pushing density
+- if you use dense `runninghub_g2` pages or another strong text-capable model, prove structure stability before pushing density
 - if the user wants hand-drawn explanation without visible whiteboard borders, prefer a borderless `custom` brief over forcing `whiteboard_handdrawn`
